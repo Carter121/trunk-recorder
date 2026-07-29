@@ -1,0 +1,27 @@
+services:
+  trunk-recorder:
+    image: trunk-recorder-custom:latest
+    pull_policy: never
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: trunk-recorder
+    network_mode: host
+    restart: unless-stopped
+    stop_grace_period: 45s
+    privileged: true
+    environment:
+      TZ: America/Denver
+      PATH: /usr/local/sbin:/usr/local/bin:/usr/sbin:/usr/bin:/sbin:/bin
+      HOME: /tmp
+      DEBIAN_FRONTEND: noninteractive
+    devices:
+      - /dev/bus/usb:/dev/bus/usb
+    volumes:
+      - /var/run/dbus:/var/run/dbus
+      - /home/server/trunkrecorder-config:/app
+      - /var/run/avahi-daemon/socket:/var/run/avahi-daemon/socket
+    mem_reservation: 3072m
+    mem_limit: 4096m
+    cpus: 6
+    shm_size: "64m"

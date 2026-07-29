@@ -105,6 +105,11 @@ WORKDIR /app
 ENV HOME=/tmp
 
 #USER nobody
+# trunk-recorder only handles SIGINT; SIGTERM has no handler and kills it instantly,
+# dropping any in-flight calls. Make `docker stop` send SIGINT so it concludes and
+# uploads active calls before exiting.
+STOPSIGNAL SIGINT
+
 # We need to use this style of CMD or else it will leak zombie processes with Unit Script
 # See #539
 CMD trunk-recorder --config=/app/config.json
